@@ -1,13 +1,15 @@
 [CmdletBinding()]
 param (
-    [Parameter()][String]$InputFile = "$PsScriptRoot/Input1.txt"
+    [Parameter()][String]$InputFile = "$PsScriptRoot/input1.txt"
 )
 
+# Source function
+. $PsScriptRoot/functions/GetCalibrationValue.ps1
+
 $final = $null
-$tst | ForEach { 
-  $tStr = $null
-  $m = ($_ | Select-String -Pattern '\d' -AllMatches).Matches.Value
-  $n = $m[0] + $m[-1]
-  $final = $final + [int]$n
+$tst = Get-Content -Path $InputFile
+$tst | ForEach-Object { 
+  $result = Get-CalibrationValue $_
+  $final = $final + $result
 }
 Write-Host $final
